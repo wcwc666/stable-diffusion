@@ -1,0 +1,44 @@
+stable diffusion的环境配置比较简单，基本按照原始的readme就可以成功运行。
+step1 建立虚拟环境，无坑
+
+```
+conda env create -f environment.yaml
+conda activate ldm
+```
+
+step2 安装所需环境，其中taming-transformers和clip不能成功安装，可以采用手动下载的方式，链接为
+
+```
+    - -e git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers
+    - -e git+https://github.com/openai/CLIP.git@main#egg=clip
+```
+或直接pip
+```
+    pip install taming-transformers==0.0.1
+    pip install taming-transformers==0.0.1
+```
+
+```
+    conda install pytorch torchvision -c pytorch
+    pip install transformers==4.19.2 diffusers invisible-watermark
+    pip install -e .
+``` 
+```
+在如下链接下载训练好的模型并放在(path/to/model.ckpt)便可
+```
+    https://huggingface.co/CompVis/stable-diffusion-v-1-1-original
+
+```
+直接运行会报错VectorQuantizer2，找到ldm/models/autoencoder.py
+```
+修改这行代码
+from taming.modules.vqvae.quantize import VectorQuantizer2 as VectorQuantizer
+为
+from taming.modules.vqvae.quantize import VectorQuantizer as VectorQuantizer
+```
+
+运行代码为(PS:在运行该代码时会报错缺少依赖，均可用pip install解决)
+```
+python scripts/txt2img.py --prompt "a photograph of XXX" --plms 
+
+```
